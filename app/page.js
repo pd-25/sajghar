@@ -1,95 +1,117 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+
+import { lazy } from 'react';
+
+const BestSellingProduct = lazy(() => import('@/component/main/home/BestSellingProducts'));
+const NewCollectionProducts = lazy(() => import('@/component/main/home/NewCollectionProducts'));
+const HeroSection = lazy(() => import('@/component/main/home/HeroSection'));
+const PopulerCategories = lazy(() => import('@/component/main/home/PopulerCategories'));
+const About = lazy(() => import( '@/component/main/home/About'));
+
+
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+   
+<HeroSection/>
+  <PopulerCategories/>
+ <BestSellingProduct/>
+ <NewCollectionProducts/>
+   <About/>
+    <section id="collection-section">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="mv-ctn-box-left">
+              <h2>See Our Collection</h2>
+              <p>
+                Lorem ipsum dolor sit amet, conssectetur adipidfscing elit.
+                Aliquam ipsum tellus, varr iohus, auctor pntdfdfesque libero.
+                Vestibulum ultricies, neque inasd dfsae elementum ultricies, ex
+                feugiat lacus, sagittis faucibus mi gthddui at purus. Atote nissim
+                lorem et dis gnissim feugiat. Suspendisse sit amet est euismod
+                libero eleifend feugiat. Maecenas sollicitudin elit ipsum. Aliquam
+                egestas nibh nec erat interdum, nec facilisis felis tincidunt.
+                Proin linia mattis magna in semper. Aliquam eu velit molestie,
+                aliquam libero ac, ornare leo.
+              </p>
+              <p>
+                Suspendisse nec ligula nunc. Ut scelerisque eros vitae libero
+                interdum, a sollicitudin metus ullamcorper. Sed a viverra lectus.
+                Fusce sit amet ligula semper, euismod ligula in, mollis elit.
+                Praesent condimentum dui sed est semper ante id elit tincidunt
+                scelerisque ut quis odio.{" "}
+              </p>
+              <a href="#" className="rm-btn mt-3">
+                Shop Now
+              </a>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="mv-ctn-box-right hover15">
+              <div>
+                <div>
+                  <img src="images/mav-pic.jpg" className="img-fluid" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+    </section>
+    <section id="top-footer-section">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12">
+            <h1>Get in touch via our website or call us at +91 9876543210</h1>
+          </div>
+        </div>
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+    </section>
+    <section id="banner-bottom-section">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-4">
+            <div className="banner-btm-Box">
+              <ul>
+                <li>
+                  <img
+                    src="images/bb-icon1.png"
+                    className="img-fluid"
+                    alt="..."
+                  />
+                </li>
+                <li>
+                  <h5>Return In 4 Days</h5>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div className="banner-btm-Box">
+              <div className="media">
+                <img src="images/bb-icon2.png" className="img-fluid" alt="..." />
+                <div className="media-body">
+                  <h5>Cash On Delivery Across India</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div className="banner-btm-Box">
+              <div className="media">
+                <img src="images/bb-icon3.png" className="img-fluid" alt="..." />
+                <div className="media-body">
+                  <h5>Support 24/7 Active Support</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </main>
+    </section>
+   
+  </>
+  
   );
 }
