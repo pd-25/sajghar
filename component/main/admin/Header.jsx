@@ -9,19 +9,19 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
     const router = useRouter();
     const { data: session, status } = useSession();
-    useEffect(() => {
-        if (status === "unauthenticated") {
-          router.push("/admin/login");
-        }
-      }, [status]);
+    // useEffect(() => {
+    //     if (status === "unauthenticated") {
+    //       router.push("/admin/login");
+    //     }
+    //   }, [status]);
     
-      if (status === "loading") {
-        return <p>Loading...</p>;
-      }
+      // if (status === "loading") {
+      //   return <p>Loading...</p>;
+      // }
     
-      if (!session) {
-        return null;
-      }
+      // if (!session) {
+      //   return null;
+      // }
   return (
 
     <> 
@@ -138,7 +138,7 @@ export default function Header() {
                 width={36}
                 className="img-circle"
               />
-              <span>{session.user?.name}</span>{" "}
+              <span>{session?.user?.name}</span>{" "}
             </a>
             <ul className="dropdown-menu dropdown-user">
               <li>
@@ -147,8 +147,8 @@ export default function Header() {
                     <img src="/assets/img/profile.jpg" alt="user" />
                   </div>
                   <div className="u-text">
-                    <h4>{session.user?.name}</h4>
-                    <p className="text-muted">{session.user?.email}</p>
+                    <h4>{session?.user?.name}</h4>
+                    <p className="text-muted">{session?.user?.email}</p>
                     <a
                       href="profile.html"
                       className="btn btn-rounded btn-danger btn-sm"
