@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -7,11 +7,8 @@ const AddCategory = () => {
 
     // Form state
     const [formData, setFormData] = useState({
-        category: '',
-        name: '',
-        description: '',
-        price: '',
-        status: 'active',
+        category_name: '',
+        category_description: '',
         image: null // To store image file
     });
 
@@ -38,30 +35,57 @@ const AddCategory = () => {
 
         // Create FormData to handle file uploads
         const formDataToSubmit = new FormData();
-        formDataToSubmit.append('category', formData.category);
-        formDataToSubmit.append('name', formData.name);
-        formDataToSubmit.append('description', formData.description);
-        formDataToSubmit.append('price', formData.price);
-        formDataToSubmit.append('status', formData.status);
+        formDataToSubmit.append('category_name', formData.category_name);
+        formDataToSubmit.append('category_description', formData.category_description);
         if (formData.image) {
             formDataToSubmit.append('image', formData.image);
         }
 
-        // Example of submitting form data (replace with your API call)
+        // Submit form data to the API
         try {
-            const response = await fetch('/api/products', {
+            const response = await fetch('/api/product-category/add-product', {
                 method: 'POST',
                 body: formDataToSubmit
             });
             if (response.ok) {
-                // Redirect or handle success
-                router.push('/products');
+                // Show success message
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Category added successfully!'
+                    }, {
+                        type: 'success',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
+
+                // Redirect after a short delay to ensure notification is visible
+                setTimeout(() => {
+                    router.push('/admin/dashboard/category');
+                }, 2000);
             } else {
-                // Handle errors
-                console.error('Failed to submit product');
+                console.error('Failed to submit category');
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Failed to add category'
+                    }, {
+                        type: 'danger',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
             }
         } catch (error) {
             console.error('Error:', error);
+            if (window.$.notify) {
+                window.$.notify({
+                    message: 'Failed to add category'
+                }, {
+                    type: 'danger',
+                    delay: 2000,
+                    z_index: 9999
+                });
+            }
         }
     };
 
@@ -69,71 +93,33 @@ const AddCategory = () => {
         <div className="container-fluid my-4">
             <div className="card shadow-sm">
                 <div className="card-header bg-primary text-white">
-                    <h4 className="card-title mb-0">Add New Product</h4>
+                    <h4 className="card-title mb-0">Add New Category</h4>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
-                            <label htmlFor="category" className="form-label">Category</label>
+                            <label htmlFor="category_name" className="form-label">Category Name</label>
                             <input
                                 type="text"
-                                id="category"
-                                name="category"
+                                id="category_name"
+                                name="category_name"
                                 className="form-control"
-                                value={formData.category}
+                                value={formData.category_name}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Product Name</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                className="form-control"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="description" className="form-label">Description</label>
+                            <label htmlFor="category_description" className="form-label">Description</label>
                             <textarea
-                                id="description"
-                                name="description"
+                                id="category_description"
+                                name="category_description"
                                 className="form-control"
-                                value={formData.description}
+                                value={formData.category_description}
                                 onChange={handleChange}
                                 rows="4"
                                 required
                             />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="price" className="form-label">Price</label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                className="form-control"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="status" className="form-label">Status</label>
-                            <select
-                                id="status"
-                                name="status"
-                                className="form-control"
-                                value={formData.status}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="image" className="form-label">Image</label>
@@ -146,7 +132,7 @@ const AddCategory = () => {
                                 onChange={handleFileChange}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">Add Product</button>
+                        <button type="submit" className="btn btn-primary">Add Category</button>
                     </form>
                 </div>
             </div>

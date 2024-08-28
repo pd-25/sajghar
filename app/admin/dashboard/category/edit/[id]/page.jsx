@@ -1,20 +1,41 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 const EditCategory = () => {
-    const {id}= useParams();
+    const { id } = useParams();  // Get the category ID from the URL params
     const router = useRouter();
 
     // Form state
     const [formData, setFormData] = useState({
-        category: '',
-        name: id,
-        description: '',
-        price: '',
-        status: 'active',
-        image: null // To store image file
+        category_name: '',
+        category_description: '',
+        image: null, // To store image file
+        viewimage: ''
     });
+    const [loading, setLoading] = useState(true);
+
+    // Fetch the existing category data
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await fetch(`/api/product-category/action/${id}`);
+                if (!response.ok) throw new Error('Failed to fetch category');
+                const data = await response.json();
+                setFormData({
+                    category_name: data.category_name || '',
+                    category_description: data.category_description || '',
+                    viewimage: data.image || '' // Handle existing image URL if needed
+                });
+                setLoading(false);
+            } catch (error) {
+                console.error('Failed to fetch category:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchCategory();
+    }, [id]);
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -37,104 +58,101 @@ const EditCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Create FormData to handle file uploads
+        // Create FormData and append only the fields that have been provided
         const formDataToSubmit = new FormData();
-        formDataToSubmit.append('category', formData.category);
-        formDataToSubmit.append('name', formData.name);
-        formDataToSubmit.append('description', formData.description);
-        formDataToSubmit.append('price', formData.price);
-        formDataToSubmit.append('status', formData.status);
+        if (formData.category_name) {
+            formDataToSubmit.append('category_name', formData.category_name);
+        }
+        if (formData.category_description) {
+            formDataToSubmit.append('category_description', formData.category_description);
+        }
         if (formData.image) {
             formDataToSubmit.append('image', formData.image);
         }
 
-        // Example of submitting form data (replace with your API call)
+        // Update the category
         try {
-            const response = await fetch('/api/products', {
-                method: 'POST',
+            const response = await fetch(`/api/product-category/action/${id}`, {
+                method: 'PUT',
                 body: formDataToSubmit
             });
             if (response.ok) {
-                // Redirect or handle success
-                router.push('/products');
+                // Show success message
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Category updated successfully!'
+                    }, {
+                        type: 'success',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
+
+                // Redirect after a short delay to ensure notification is visible
+                setTimeout(() => {
+                    router.push('/admin/dashboard/category');
+                }, 2000);
             } else {
-                // Handle errors
-                console.error('Failed to submit product');
+                console.error('Failed to update category');
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Failed to update category'
+                    }, {
+                        type: 'danger',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
             }
         } catch (error) {
             console.error('Error:', error);
+            if (window.$.notify) {
+                window.$.notify({
+                    message: 'Failed to update category'
+                }, {
+                    type: 'danger',
+                    delay: 2000,
+                    z_index: 9999
+                });
+            }
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="container-fluid my-4">
             <div className="card shadow-sm">
                 <div className="card-header bg-primary text-white">
-                    <h4 className="card-title mb-0">Add New Product</h4>
+                    <h4 className="card-title mb-0">Edit Category</h4>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
-                            <label htmlFor="category" className="form-label">Category</label>
+                            <label htmlFor="category_name" className="form-label">Category Name</label>
                             <input
                                 type="text"
-                                id="category"
-                                name="category"
+                                id="category_name"
+                                name="category_name"
                                 className="form-control"
-                                value={formData.category}
+                                value={formData.category_name}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Product Name</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                className="form-control"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="description" className="form-label">Description</label>
+                            <label htmlFor="category_description" className="form-label">Category Description</label>
                             <textarea
-                                id="description"
-                                name="description"
+                                id="category_description"
+                                name="category_description"
                                 className="form-control"
-                                value={formData.description}
+                                value={formData.category_description}
                                 onChange={handleChange}
                                 rows="4"
                                 required
                             />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="price" className="form-label">Price</label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                className="form-control"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="status" className="form-label">Status</label>
-                            <select
-                                id="status"
-                                name="status"
-                                className="form-control"
-                                value={formData.status}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="image" className="form-label">Image</label>
@@ -146,8 +164,15 @@ const EditCategory = () => {
                                 accept="image/*"
                                 onChange={handleFileChange}
                             />
+                            {formData.viewimage && typeof formData.viewimage === 'string' && (
+                                <img
+                                    src={formData.viewimage}
+                                    alt="Current Category"
+                                    style={{ width: '100px', marginTop: '10px' }}
+                                />
+                            )}
                         </div>
-                        <button type="submit" className="btn btn-primary">Add Product</button>
+                        <button type="submit" className="btn btn-primary">Update Category</button>
                     </form>
                 </div>
             </div>

@@ -1,41 +1,92 @@
-"use client"
+"use client";
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
-const CatrgoryTable = ({  handleDelete }) => {
-    const [catrgorys] = useState([
-        { id: 1, name: 'Solar Panel X200', category: 'Solar PV Module', price: 199.99, inStock: true },
-        { id: 2, name: 'Solar Inverter Y500', category: 'Inverters', price: 499.99, inStock: false },
-        { id: 3, name: 'Battery Z1000', category: 'Batteries', price: 299.99, inStock: true },
-        // Add more catrgorys as needed
-    ]);
-
+const CategoryTable = () => {
+    const [categories, setCategories] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
-    // Filtered and paginated catrgorys
-    const filteredCatrgorys = catrgorys.filter(catrgory =>
-        catrgory.name.toLowerCase().includes(filter.toLowerCase()) ||
-        catrgory.category.toLowerCase().includes(filter.toLowerCase())
+    useEffect(() => {
+        // Fetch categories from the API
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('/api/product-category');
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    const handleDelete = async (id) => {
+        // Show confirmation dialog
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`/api/product-category/action/${id}`, {
+                    method: 'DELETE',
+                });
+                if (response.ok) {
+                    // Remove the deleted category from the state
+                    setCategories(categories.filter(category => category.id !== id));
+                    Swal.fire(
+                        'Deleted!',
+                        'Category has been deleted.',
+                        'success'
+                    );
+                } else {
+                    console.error('Failed to delete category:', await response.text());
+                    Swal.fire(
+                        'Error!',
+                        'Failed to delete category.',
+                        'error'
+                    );
+                }
+            } catch (error) {
+                console.error('Failed to delete category:', error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to delete category.',
+                    'error'
+                );
+            }
+        }
+    };
+
+    // Filtered and paginated categories
+    const filteredCategories = categories.filter(category =>
+        category.category_name.toLowerCase().includes(filter.toLowerCase()) ||
+        category.slug.toLowerCase().includes(filter.toLowerCase())
     );
 
-    const paginatedCatrgorys = filteredCatrgorys.slice(
+    const paginatedCategories = filteredCategories.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
 
-    const totalPages = Math.ceil(filteredCatrgorys.length / itemsPerPage);
-
-    // Function to handle adding a catrgory
-
+    const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
 
     return (
         <div className="container-fluid my-4">
             <div className="card shadow-sm">
                 <div className="card-header text-white">
                     <div className="d-flex justify-content-between align-items-center">
-                        <h4 className="card-title mb-0">All Catrgorys</h4>
+                        <h4 className="card-title mb-0">All Categories</h4>
                         <div>
                             <input
                                 type="text"
@@ -46,47 +97,46 @@ const CatrgoryTable = ({  handleDelete }) => {
                             />
                         </div>
                         <div>
-                            <Link href="/admin/dashboard/catrgory/create"
-                                className="btn btn-primary me-2"
-                            >
-                                Add Catrgory
+                            <Link href="/admin/dashboard/category/create" className="btn btn-primary me-2">
+                                Add Category
                             </Link>
-
                         </div>
                     </div>
                 </div>
                 <div className="card-body p-0">
-                    <table className="table table-striped table-hover mb-0">
-                        <thead className="bg-light">
+                    <table className="table table-striped table-hover mb-4 ">
+                        <thead className="bg-light ">
                             <tr>
                                 <th>#</th>
-                                <th>Catrgory Name</th>
-                              
-                                <th>Stock Status</th>
+                                <th>Image</th>
+                                <th>Category Name</th>
+                                <th>Slug</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedCatrgorys.map((catrgory, index) => (
-                                <tr key={catrgory.id}>
+                            {paginatedCategories.map((category, index) => (
+                                <tr key={category.id}>
                                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                    <td>{catrgory.name}</td>
-                                   
                                     <td>
-                                        <span className={`badge ${catrgory.inStock ? 'bg-success' : 'bg-danger'}`}>
-                                            {catrgory.inStock ? 'In Stock' : 'Out of Stock'}
-                                        </span>
+                                        <img
+                                            src={category.image}
+                                            alt={category.category_name}
+                                            style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                                        />
                                     </td>
+                                    <td>{category.category_name}</td>
+                                    <td>{category.slug}</td>
                                     <td>
                                         <Link
                                             className="btn btn-outline-primary btn-sm me-2 m-1"
-                                            href={`/admin/dashboard/category/edit/${catrgory.id}`}
+                                            href={`/admin/dashboard/category/edit/${category.id}`}
                                         >
                                             Edit
                                         </Link>
                                         <button
                                             className="btn btn-outline-danger btn-sm"
-                                            onClick={() => handleDelete(catrgory.id)}
+                                            onClick={() => handleDelete(category.id)}
                                         >
                                             Delete
                                         </button>
@@ -98,7 +148,7 @@ const CatrgoryTable = ({  handleDelete }) => {
                 </div>
                 <div className="card-footer">
                     <nav>
-                        <ul className="pagination justify-content-center">
+                        <ul className="pagination justify-content-center mb-0">
                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                                 <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
                                     Previous
@@ -124,4 +174,4 @@ const CatrgoryTable = ({  handleDelete }) => {
     );
 };
 
-export default CatrgoryTable;
+export default CategoryTable;
