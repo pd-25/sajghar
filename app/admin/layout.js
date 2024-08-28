@@ -1,9 +1,9 @@
 'use client';
 import { usePathname } from "next/navigation";
-import { AdminScript } from "../../component/main/admin/AdminScript";
-import Header from "../../component/main/admin/Header";
+import { AdminScript } from "../../component/admin/AdminScript";
+import Header from "../../component/admin/Header";
 
-import Sidebar from "../../component/main/admin/Sidebar";
+import Sidebar from "../../component/admin/Sidebar";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react"
 

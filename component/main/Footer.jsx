@@ -15,7 +15,7 @@ const Footer = () => {
               </p>
             </div>
             <div className="col-lg-4">
-              <h4>Useful Link</h4>
+              <h4>Useful Links</h4>
               <ul className="footer-menu">
                 <li>
                   <a href="">Blog</a>
@@ -57,5 +57,6 @@ const Footer = () => {
     </footer>
   )
 }
+
 
 export default Footer
