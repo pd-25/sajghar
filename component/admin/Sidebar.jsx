@@ -71,8 +71,20 @@ export default function Sidebar() {
           {/* <span className="badge badge-count">6</span> */}
         </Link>
       </li>
-     
-      
+      <li className="nav-item">
+        <Link href="/admin/dashboard/newcollection">
+          <i className="la la-th" />
+          <p>New Collection</p>
+          {/* <span className="badge badge-count">6</span> */}
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link href="/admin/dashboard/product-enquiry">
+          <i className="la la-th" />
+          <p>Product Enquiry</p>
+          {/* <span className="badge badge-count">6</span> */}
+        </Link>
+      </li>
     </ul>
   </div>
 </div>

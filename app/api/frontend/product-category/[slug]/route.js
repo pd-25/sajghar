@@ -11,8 +11,15 @@ export async function GET(req) {
         const category = await prisma.productCategory.findUnique({
             where: { slug },
             include: {
-                products: true,  // Assuming there is a relation called `products` in the schema
-            },
+                products: {
+                    where: {
+                        status: 'ACTIVE'  // Filter by status for products
+                    },
+                    orderBy: {
+                        id: 'desc',
+                      },
+                }
+            }
         });
 
         if (!category) {

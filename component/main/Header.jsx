@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import Menu from './Menu'
+import InstantSearch from './Search'
 
 const Header = () => {
   return (
@@ -23,7 +24,7 @@ const Header = () => {
       <div className="container">
         <div className="row text-center">
           <div className="col-lg-12" style={{ display: "none" }}>
-            <img src="images/logo.png" className="img-fluid" />
+            <img src="/images/logo.png" className="img-fluid" />
           </div>
         </div>
       </div>
@@ -56,22 +57,12 @@ const Header = () => {
             <div className="right-hd">
               <ul className="cart-list">
                 <li>
-                  <form id="pro-search" action="#">
+                  {/* <form id="pro-search" action="#">
                     <input type="search" placeholder="Seach..." />
-                  </form>
+                  </form> */}
+                  <InstantSearch/>
                 </li>
-                <li className="th-btn tbtn2">
-                  <Link href="/contact">
-                    My Cart{" "}
-                    <i className="fa fa-shopping-cart" aria-hidden="true" />
-                    <span className="cart-ds">(0)</span>
-                  </Link>
-                </li>
-                <li className="th-btn tbtn1">
-                  <a href="">
-                    Login <i className="fa fa-user" aria-hidden="true" />
-                  </a>
-                </li>
+                
               </ul>
             </div>
           </div>

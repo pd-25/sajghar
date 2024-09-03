@@ -1,19 +1,40 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const AddProductPage = () => {
+const AddProduct = () => {
     const router = useRouter();
 
-    // Form state
+    // State for form data and category list
     const [formData, setFormData] = useState({
-        category: '',
         name: '',
+        category_id: '',
         description: '',
+        offer: '',
+        status: 'ACTIVE',
+        images: [], // Updated to handle multiple images
         price: '',
-        status: 'active',
-        image: null // To store image file
     });
+    const [categories, setCategories] = useState([]);
+
+    // Fetch category list on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('/api/backend/product-category/');
+                if (response.ok) {
+                    const data = await response.json();
+                    setCategories(data); // Assuming data is an array of category objects
+                } else {
+                    console.error('Failed to fetch categories');
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -24,11 +45,11 @@ const AddProductPage = () => {
         });
     };
 
-    // Handle file input changes
+    // Handle file input changes for multiple files
     const handleFileChange = (e) => {
         setFormData({
             ...formData,
-            image: e.target.files[0]
+            images: Array.from(e.target.files) // Convert FileList to array
         });
     };
 
@@ -38,30 +59,63 @@ const AddProductPage = () => {
 
         // Create FormData to handle file uploads
         const formDataToSubmit = new FormData();
-        formDataToSubmit.append('category', formData.category);
         formDataToSubmit.append('name', formData.name);
+        formDataToSubmit.append('category_id', formData.category_id);
         formDataToSubmit.append('description', formData.description);
+        formDataToSubmit.append('offer', formData.offer);
         formDataToSubmit.append('price', formData.price);
         formDataToSubmit.append('status', formData.status);
-        if (formData.image) {
-            formDataToSubmit.append('image', formData.image);
-        }
 
-        // Example of submitting form data (replace with your API call)
+        // Append each image file
+        formData.images.forEach((image, index) => {
+            formDataToSubmit.append('images', image);
+        });
+
+        // Submit form data to the API
         try {
-            const response = await fetch('/api/products', {
+            const response = await fetch('/api/backend/product/add-product', {
                 method: 'POST',
                 body: formDataToSubmit
             });
             if (response.ok) {
-                // Redirect or handle success
-                router.push('/products');
+                // Show success message
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Product added successfully!'
+                    }, {
+                        type: 'success',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
+
+                // Redirect after a short delay to ensure notification is visible
+                setTimeout(() => {
+                    router.push('/admin/dashboard/product');
+                }, 2000);
             } else {
-                // Handle errors
                 console.error('Failed to submit product');
+                if (window.$.notify) {
+                    window.$.notify({
+                        message: 'Failed to add product'
+                    }, {
+                        type: 'danger',
+                        delay: 2000,
+                        z_index: 9999
+                    });
+                }
             }
         } catch (error) {
             console.error('Error:', error);
+            if (window.$.notify) {
+                window.$.notify({
+                    message: 'Failed to add product'
+                }, {
+                    type: 'danger',
+                    delay: 2000,
+                    z_index: 9999
+                });
+            }
         }
     };
 
@@ -74,18 +128,6 @@ const AddProductPage = () => {
                 <div className="card-body">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
-                            <label htmlFor="category" className="form-label">Category</label>
-                            <input
-                                type="text"
-                                id="category"
-                                name="category"
-                                className="form-control"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
                             <label htmlFor="name" className="form-label">Product Name</label>
                             <input
                                 type="text"
@@ -96,6 +138,36 @@ const AddProductPage = () => {
                                 onChange={handleChange}
                                 required
                             />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="price" className="form-label">Product Price</label>
+                            <input
+                                type="text"
+                                id="price"
+                                name="price"
+                                className="form-control"
+                                value={formData.price}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="category_id" className="form-label">Category</label>
+                            <select
+                                id="category_id"
+                                name="category_id"
+                                className="form-control"
+                                value={formData.category_id}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select a category</option>
+                                {categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.category_name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="description" className="form-label">Description</label>
@@ -110,16 +182,19 @@ const AddProductPage = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="price" className="form-label">Price</label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
+                            <label htmlFor="offer" className="form-label">Offer</label>
+                            <select
+                                id="offer"
+                                name="offer"
                                 className="form-control"
-                                value={formData.price}
+                                value={formData.offer}
                                 onChange={handleChange}
-                                required
-                            />
+                            >
+                                <option value="">Select an offer</option>
+                                <option value="no_offer">No Offer</option>
+                                <option value="30_off">30% Off</option>
+                                <option value="50_off">50% Off</option>
+                            </select>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="status" className="form-label">Status</label>
@@ -129,20 +204,20 @@ const AddProductPage = () => {
                                 className="form-control"
                                 value={formData.status}
                                 onChange={handleChange}
-                                required
                             >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
+                                <option value="ACTIVE">Active</option>
+                                <option value="DEACTIVE">Inactive</option>
                             </select>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="image" className="form-label">Image</label>
+                            <label htmlFor="images" className="form-label">Images</label>
                             <input
                                 type="file"
-                                id="image"
-                                name="image"
+                                id="images"
+                                name="images"
                                 className="form-control"
                                 accept="image/*"
+                                multiple // Allow multiple files
                                 onChange={handleFileChange}
                             />
                         </div>
@@ -154,4 +229,4 @@ const AddProductPage = () => {
     );
 };
 
-export default AddProductPage;
+export default AddProduct;

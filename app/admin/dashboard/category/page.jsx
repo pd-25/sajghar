@@ -8,16 +8,19 @@ const CategoryTable = () => {
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
+    const [loading, setLoading] = useState(true); // New loading state
 
     useEffect(() => {
         // Fetch categories from the API
         const fetchCategories = async () => {
             try {
-                const response = await fetch('/api/product-category');
+                const response = await fetch('/api/backend/product-category');
                 const data = await response.json();
                 setCategories(data);
+                setLoading(false); // Data loaded
             } catch (error) {
                 console.error('Failed to fetch categories:', error);
+                setLoading(false); // Data loaded with error
             }
         };
 
@@ -38,7 +41,7 @@ const CategoryTable = () => {
 
         if (result.isConfirmed) {
             try {
-                const response = await fetch(`/api/product-category/action/${id}`, {
+                const response = await fetch(`/api/backend/product-category/action/${id}`, {
                     method: 'DELETE',
                 });
                 if (response.ok) {
@@ -104,47 +107,84 @@ const CategoryTable = () => {
                     </div>
                 </div>
                 <div className="card-body p-0">
-                    <table className="table table-striped table-hover mb-4 ">
-                        <thead className="bg-light ">
-                            <tr>
-                                <th>#</th>
-                                <th>Image</th>
-                                <th>Category Name</th>
-                                <th>Slug</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedCategories.map((category, index) => (
-                                <tr key={category.id}>
-                                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                    <td>
-                                        <img
-                                            src={category.image}
-                                            alt={category.category_name}
-                                            style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                                        />
-                                    </td>
-                                    <td>{category.category_name}</td>
-                                    <td>{category.slug}</td>
-                                    <td>
-                                        <Link
-                                            className="btn btn-outline-primary btn-sm me-2 m-1"
-                                            href={`/admin/dashboard/category/edit/${category.id}`}
-                                        >
-                                            Edit
-                                        </Link>
-                                        <button
-                                            className="btn btn-outline-danger btn-sm"
-                                            onClick={() => handleDelete(category.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
+                    {loading ? (
+                        <div className="table-responsive">
+                            <table className="table table-striped table-hover mb-4">
+                                <thead className="bg-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Category Name</th>
+                                        <th>Slug</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {[...Array(itemsPerPage)].map((_, index) => (
+                                        <tr key={index}>
+                                            <td>
+                                                <div className="skeleton" style={{ width: '50px', height: '20px' }}></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton" style={{ width: '50px', height: '50px' }}></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton" style={{ width: '150px', height: '20px' }}></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton" style={{ width: '100px', height: '20px' }}></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton" style={{ width: '100px', height: '20px' }}></div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <table className="table table-striped table-hover mb-4">
+                            <thead className="bg-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>Category Name</th>
+                                    <th>Slug</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paginatedCategories.map((category, index) => (
+                                    <tr key={category.id}>
+                                        <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                        <td>
+                                            <img
+                                                src={category.image}
+                                                alt={category.category_name}
+                                                style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                                            />
+                                        </td>
+                                        <td>{category.category_name}</td>
+                                        <td>{category.slug}</td>
+                                        <td>
+                                            <Link
+                                                className="btn btn-outline-primary btn-sm me-2 m-1"
+                                                href={`/admin/dashboard/category/edit/${category.id}`}
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                className="btn btn-outline-danger btn-sm"
+                                                onClick={() => handleDelete(category.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
                 <div className="card-footer">
                     <nav>

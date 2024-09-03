@@ -9,7 +9,7 @@ const About = () => {
           <div className="hover14 column">
             <div>
               <div>
-                <img src="images/abt-pic.jpg" className="img-fluid" />
+                <img src="/images/abt-pic.jpg" className="img-fluid" />
               </div>
             </div>
           </div>

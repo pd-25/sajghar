@@ -19,7 +19,7 @@ const EditCategory = () => {
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const response = await fetch(`/api/product-category/action/${id}`);
+                const response = await fetch(`/api/backend/product-category/action/${id}`);
                 if (!response.ok) throw new Error('Failed to fetch category');
                 const data = await response.json();
                 setFormData({
@@ -72,7 +72,7 @@ const EditCategory = () => {
 
         // Update the category
         try {
-            const response = await fetch(`/api/product-category/action/${id}`, {
+            const response = await fetch(`/api/backend/product-category/action/${id}`, {
                 method: 'PUT',
                 body: formDataToSubmit
             });

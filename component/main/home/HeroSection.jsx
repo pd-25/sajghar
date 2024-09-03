@@ -20,7 +20,7 @@ const HeroSection = () => {
         {/* Slide One - Set the background image for this slide in the line below */}
         <div
           className="carousel-item active"
-          style={{ backgroundImage: 'url("images/banner.jpg")' }}
+          style={{ backgroundImage: 'url("/images/banner.jpg")' }}
         >
           <div className="carousel-caption first-cc">
             <h1>Saajghar</h1>
@@ -36,7 +36,7 @@ const HeroSection = () => {
         {/* Slide Two - Set the background image for this slide in the line below */}
         <div
           className="carousel-item"
-          style={{ backgroundImage: 'url("images/banner.jpg")' }}
+          style={{ backgroundImage: 'url("/images/banner.jpg")' }}
         >
           <div className="carousel-caption d-none d-md-block">
             <h1>Saajghar</h1>
@@ -57,7 +57,7 @@ const HeroSection = () => {
         data-slide="prev"
       >
         <span className="carousel-control-prev-icon" aria-hidden="true">
-          <img src="images/ban-left-btn.png" className="img-fluid" />
+          <img src="/images/ban-left-btn.png" className="img-fluid" />
         </span>
         <span className="sr-only">Previous</span>
       </a>
@@ -68,7 +68,7 @@ const HeroSection = () => {
         data-slide="next"
       >
         <span className="carousel-control-next-icon" aria-hidden="true">
-          <img src="images/ban-right-btn.png" className="img-fluid" />
+          <img src="/images/ban-right-btn.png" className="img-fluid" />
         </span>
         <span className="sr-only">Next</span>
       </a>

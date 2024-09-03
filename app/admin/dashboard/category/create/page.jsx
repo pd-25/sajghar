@@ -43,7 +43,7 @@ const AddCategory = () => {
 
         // Submit form data to the API
         try {
-            const response = await fetch('/api/product-category/add-product', {
+            const response = await fetch('/api/backend/product-category/add-product', {
                 method: 'POST',
                 body: formDataToSubmit
             });

@@ -1,11 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function ErrorPage() {
   const router = useRouter();
-  const query = new URLSearchParams(window.location.search);
-  const error = query.get('error') || 'Unknown error occurred';
+  const [error, setError] = useState('Unknown error occurred');
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    setError(query.get('error') || 'Unknown error occurred');
+  }, []);
 
   return (
     <div>

@@ -51,7 +51,7 @@ export default function Home() {
             <div className="mv-ctn-box-right hover15">
               <div>
                 <div>
-                  <img src="images/mav-pic.jpg" className="img-fluid" />
+                  <img src="/images/mav-pic.jpg" className="img-fluid" />
                 </div>
               </div>
             </div>
@@ -76,7 +76,7 @@ export default function Home() {
               <ul>
                 <li>
                   <img
-                    src="images/bb-icon1.png"
+                    src="/images/bb-icon1.png"
                     className="img-fluid"
                     alt="..."
                   />
@@ -90,7 +90,7 @@ export default function Home() {
           <div className="col-lg-4">
             <div className="banner-btm-Box">
               <div className="media">
-                <img src="images/bb-icon2.png" className="img-fluid" alt="..." />
+                <img src="/images/bb-icon2.png" className="img-fluid" alt="..." />
                 <div className="media-body">
                   <h5>Cash On Delivery Across India</h5>
                 </div>
@@ -100,7 +100,7 @@ export default function Home() {
           <div className="col-lg-4">
             <div className="banner-btm-Box">
               <div className="media">
-                <img src="images/bb-icon3.png" className="img-fluid" alt="..." />
+                <img src="/images/bb-icon3.png" className="img-fluid" alt="..." />
                 <div className="media-body">
                   <h5>Support 24/7 Active Support</h5>
                 </div>
