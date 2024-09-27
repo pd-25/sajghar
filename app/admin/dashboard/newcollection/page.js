@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const NewCollectionTable = () => {
+    noStore();
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState(''); // Add type filter state

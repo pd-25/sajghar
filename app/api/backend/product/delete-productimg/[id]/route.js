@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import path from "path";
 import { unlink } from "fs/promises";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 export async function DELETE(req, { params }) {
+  noStore();
   try {
     const { id } = params; // Extract the ID from the route parameters
 

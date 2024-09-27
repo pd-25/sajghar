@@ -2,8 +2,9 @@
 import Link from 'next/link'
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const Menu = () => {
+  noStore();
   const [categories, setCategories] = useState([]);
   const [offers, setOffers] = useState({ thirtyOff: [], fiftyOff: [] });
 

@@ -5,8 +5,9 @@ import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles for skeleton loader
 import { useRouter } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const PopulerCategories = () => {
+  noStore();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for tracking data fetching
   const router = useRouter();

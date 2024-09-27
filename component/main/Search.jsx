@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const InstantSearch = () => {
+  noStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const router = useRouter();

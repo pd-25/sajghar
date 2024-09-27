@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const EditCollection = () => {
+    noStore();
     const router = useRouter();
     const { id } = useParams(); // Assuming you're using Next.js' dynamic routing for the ID parameter
     const [formData, setFormData] = useState({

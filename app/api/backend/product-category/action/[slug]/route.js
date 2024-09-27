@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 // Utility function to generate a slug from a string
@@ -29,6 +29,7 @@ const generateUniqueSlug = async (baseSlug, excludeId) => {
 
 // GET: Fetch a product category by ID
 export async function GET(req) {
+  noStore();
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop();
@@ -50,6 +51,7 @@ export async function GET(req) {
 
 // PUT: Update a product category by ID
 export async function PUT(req) {
+  noStore();
   try {
     const formData = await req.formData();
 
@@ -91,9 +93,9 @@ export async function PUT(req) {
     if (imageFile) {
       const buffer = Buffer.from(await imageFile.arrayBuffer());
       const filename = imageFile.name.replaceAll(" ", "_");
-      const filePath = path.join(process.cwd(), "public/categoryimage", filename);
+      const filePath = path.join(process.cwd(), "public/uploads/categoryimage", filename);
       await writeFile(filePath, buffer);
-      updateData.image = `/categoryimage/${filename}`;
+      updateData.image = `/uploads/categoryimage/${filename}`;
     } else {
       updateData.image = existingCategory.image; // Retain old image if no new image is provided
     }
@@ -113,6 +115,7 @@ export async function PUT(req) {
 
 // DELETE: Delete a product category by ID
 export async function DELETE(req) {
+  noStore();
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop();

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-
+import { unstable_noStore as noStore } from 'next/cache';
 // Basic styles for skeleton loaders
 const skeletonStyle = {
   width: '100%',
@@ -12,6 +12,7 @@ const skeletonStyle = {
 };
 
 const ProductEnquiryTable = () => {
+  noStore();
   const [enquiries, setEnquiries] = useState([]);
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

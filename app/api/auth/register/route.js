@@ -1,8 +1,8 @@
 import { hash } from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
-
+noStore();
 export async function POST(req) {
   try {
     // Parse the request body

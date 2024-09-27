@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { unstable_noStore as noStore } from 'next/cache';
 
 const InquiryModal = ({ productName, onClose, show }) => {
+  noStore();
   const [formData, setFormData] = useState({
     product_name: productName,
     full_name: "",

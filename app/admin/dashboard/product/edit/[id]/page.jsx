@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Swal from 'sweetalert2';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const EditProduct = () => {
+    noStore();
     const router = useRouter();
     const { id } = useParams(); // Get the product ID from the route parameters
 

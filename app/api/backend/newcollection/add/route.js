@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 export async function POST(req) {
+  noStore();
   try {
     const formData = await req.formData();
     const youtubeLink = formData.get("youtube_link");

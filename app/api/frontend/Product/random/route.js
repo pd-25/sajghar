@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 export async function GET(req) {
+  noStore();
   try {
     // Count the total number of active products
     const totalProducts = await prisma.product.count({

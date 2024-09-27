@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const NewCollection = () => {
+    noStore();
     const router = useRouter();
 
     const [formData, setFormData] = useState({

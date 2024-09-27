@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 // GET: Fetch a NewCollection by ID
 export async function GET(req) {
+  noStore();
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop(); // Extracting the ID from the URL
@@ -26,6 +27,7 @@ export async function GET(req) {
 
 // PUT: Update a NewCollection by ID
 export async function PUT(req) {
+  noStore();
   try {
     const formData = await req.formData(); // Read JSON data from the request
     const url = new URL(req.url);
@@ -69,6 +71,7 @@ export async function PUT(req) {
 
 // DELETE: Delete a NewCollection by ID
 export async function DELETE(req) {
+  noStore();
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop(); // Extracting the ID from the URL

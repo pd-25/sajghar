@@ -115,3 +115,7 @@ export default function Home() {
   
   );
 }
+export const metadata = {
+  title: "Sajghor | Kolkata",
+  description: "Sajghor is a boutique which creates the kind of clothes which makes the fusion between fashion and the bengali tradiotion.",
+};

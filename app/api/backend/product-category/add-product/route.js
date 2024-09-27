@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 // Utility function to generate a slug from a string
@@ -28,6 +28,7 @@ const generateUniqueSlug = async (baseSlug) => {
 };
 
 export async function POST(req) {
+  noStore();
   try {
     const formData = await req.formData();
     
@@ -44,9 +45,9 @@ export async function POST(req) {
 
     // Replace spaces in the file name with underscores
     const filename = imageFile.name.replaceAll(" ", "_");
-    const filePath = path.join(process.cwd(), "public/categoryimage", filename);
+    const filePath = path.join(process.cwd(), "public/uploads/categoryimage", filename);
 
-    // Write the file to the specified directory (public/categoryimage)
+    // Write the file to the specified directory (public/uploads/categoryimage)
     await writeFile(filePath, buffer);
 
     // Generate a slug based on the category name
@@ -56,7 +57,7 @@ export async function POST(req) {
     // Create the new category with the image path and generated slug
     const newCategory = await prisma.productCategory.create({
       data: {
-        image: `/categoryimage/${filename}`, // Store the relative path to the image
+        image: `/uploads/categoryimage/${filename}`, // Store the relative path to the image
         category_name,
         category_description,
         slug,

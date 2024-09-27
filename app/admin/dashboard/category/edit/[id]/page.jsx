@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const EditCategory = () => {
+    noStore();
     const { id } = useParams();  // Get the category ID from the URL params
     const router = useRouter();
 

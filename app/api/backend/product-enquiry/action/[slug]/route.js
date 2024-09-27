@@ -1,12 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 
 
 // DELETE: Delete a NewCollection by ID
 export async function DELETE(req) {
+  noStore();
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop(); // Extracting the ID from the URL

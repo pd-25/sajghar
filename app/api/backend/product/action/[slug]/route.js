@@ -2,11 +2,13 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile,mkdir  } from "fs/promises";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 // Utility function to generate a slug from a string
 const generateSlug = (str) => {
+  noStore();
+
   return str
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric characters with hyphens
@@ -15,6 +17,8 @@ const generateSlug = (str) => {
 
 // Utility function to generate a unique slug
 const generateUniqueSlug = async (baseSlug, excludeId) => {
+  noStore();
+
   let slug = baseSlug;
   let count = 1;
 
@@ -29,6 +33,8 @@ const generateUniqueSlug = async (baseSlug, excludeId) => {
 
 // GET: Fetch a product by ID
 export async function GET(req) {
+  noStore();
+
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop();
@@ -54,6 +60,7 @@ export async function GET(req) {
 
 // PUT: Update a product by ID
 export async function PUT(req) {
+  noStore();
   try {
     const formData = await req.formData();
     const url = new URL(req.url);
@@ -113,13 +120,13 @@ export async function PUT(req) {
       for (const imageFile of imageFiles) {
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(imageFile.name)}`;
-        const filePath = path.join(process.cwd(), "public/productimages", uniqueFilename);
+        const filePath = path.join(process.cwd(), "public/uploads/productimages", uniqueFilename);
         await writeFile(filePath, buffer);
 
         const newImage = await prisma.productImage.create({
           data: {
             product_id: existingProduct.id,
-            image_path: `/productimages/${uniqueFilename}`,
+            image_path: `/uploads/productimages/${uniqueFilename}`,
             alt_text: name, // Optional, can be customized
           },
         });
@@ -150,6 +157,8 @@ export async function PUT(req) {
 
 // DELETE: Delete a product by ID
 export async function DELETE(req) {
+  noStore();
+
   try {
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop();
@@ -182,6 +191,7 @@ export async function DELETE(req) {
 
     // Delete the product
     await prisma.product.delete({
+
       where: { id: Number(id) },
     });
 

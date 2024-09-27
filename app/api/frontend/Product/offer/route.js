@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 export async function GET(req) {
+  noStore();
   try {
     // Fetch active products with specific offers and their related category information
     const products = await prisma.product.findMany({

@@ -4,8 +4,9 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import { unstable_noStore as noStore } from 'next/cache';
 export default function LoginPage() {
+  noStore();
   const [error, setError] = useState(null);
   const router = useRouter();
 

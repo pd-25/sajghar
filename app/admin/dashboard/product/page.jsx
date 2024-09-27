@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-
+import { unstable_noStore as noStore } from 'next/cache';
 // Basic styles for skeleton loaders
 const skeletonStyle = {
     width: '100%',
@@ -13,6 +13,7 @@ const skeletonStyle = {
 };
 
 const ProductTable = () => {
+    noStore();
     const [products, setProducts] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);

@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const AddProduct = () => {
+    noStore();
     const router = useRouter();
 
     // State for form data and category list

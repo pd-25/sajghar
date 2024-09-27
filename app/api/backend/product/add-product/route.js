@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 
 // Utility function to generate a slug from a string
@@ -28,6 +28,7 @@ const generateUniqueSlug = async (baseSlug) => {
 };
 
 export async function POST(req) {
+  noStore();
   try {
     const formData = await req.formData();
 
@@ -87,16 +88,16 @@ export async function POST(req) {
 
       // Generate a unique filename using a timestamp and a random number
       const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(imageFile.name)}`;
-      const filePath = path.join(process.cwd(), "public/productimages", uniqueFilename);
+      const filePath = path.join(process.cwd(), "public/uploads/productimages", uniqueFilename);
 
-      // Write the file to the specified directory (public/productimages)
+      // Write the file to the specified directory (public/uploads/productimages)
       await writeFile(filePath, buffer);
 
       // Store the relative path to the image in the ProductImage model
       const newImage = await prisma.productImage.create({
         data: {
           product_id: newProduct.id,
-          image_path: `/productimages/${uniqueFilename}`,
+          image_path: `/uploads/productimages/${uniqueFilename}`,
           alt_text: name, // Optional, can be customized
         },
       });
