@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles for skeleton loader
 import { unstable_noStore as noStore } from 'next/cache';
+
 export default function BestSellingProduct() {
   noStore();
   const [products, setProducts] = useState([]);
@@ -21,6 +22,7 @@ export default function BestSellingProduct() {
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProducts([]); // Ensure products is an array even if the request fails
       } finally {
         setLoading(false); // Set loading to false after data is fetched
       }
@@ -84,16 +86,30 @@ export default function BestSellingProduct() {
                           <Skeleton height={350} width={240} />
                         </div>
                         <div className="mt-2 ">
-                        <Skeleton height={20} width={240} />
-                        <Skeleton height={20} width={240} />
-                        <Skeleton height={30} width={240} />
+                          <Skeleton height={20} width={240} />
+                          <Skeleton height={20} width={240} />
+                          <Skeleton height={30} width={240} />
+                        </div>
                       </div>
-                      </div>
-                     
                     </div>
                   </div>
                 ))}
               </Slider>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return (
+      <section id="best-sell-section">
+        <div className="container">
+          <div className="row justify-content-center mb-3">
+            <div className="col-lg-12 text-center">
+              <h1>Best Selling Product</h1>
+              <p>No products found.</p>
             </div>
           </div>
         </div>
@@ -181,6 +197,7 @@ export default function BestSellingProduct() {
 .slick-track {
   display: flex;
 `}
+
       </style>
     </section>
   );

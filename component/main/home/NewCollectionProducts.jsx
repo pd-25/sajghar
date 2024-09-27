@@ -1,14 +1,16 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import Slider from 'react-slick';
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Link from "next/link";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles for skeleton loader
 import { unstable_noStore as noStore } from 'next/cache';
-const NewCollectionProducts = () => {
+
+export default function NewCollectionProducts() {
   noStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for tracking data fetching
@@ -20,6 +22,7 @@ const NewCollectionProducts = () => {
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProducts([]); // Ensure products is an array even if the request fails
       } finally {
         setLoading(false); // Set loading to false after data is fetched
       }
@@ -36,6 +39,7 @@ const NewCollectionProducts = () => {
     slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true, 
+    autoplaySpeed: 3000,
     responsive: [
       {
         breakpoint: 1024,
@@ -64,32 +68,31 @@ const NewCollectionProducts = () => {
 
   if (loading) {
     return (
-      <section id="new-collection-section">
+      <section id="best-sell-section">
         <div className="container">
           <div className="row justify-content-center mb-3">
-            <div className="col-lg-12">
-              <h1>New Collection</h1>
+            <div className="col-lg-12 text-center">
+              <h1>Best Selling Product</h1>
             </div>
           </div>
           <div className="row">
             <div className="col-lg-12">
               <Slider {...settings}>
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="item">
-                  <div className="product-box text-center">
-                    <div className="product-box-img hover01">
-                      <div>
-                        <Skeleton height={350} width={240} />
+                    <div key={index} className="item">
+                    <div className="product-box text-center">
+                      <div className="product-box-img hover01">
+                        <div>
+                          <Skeleton height={350} width={240} />
+                        </div>
+                        <div className="mt-2 ">
+                          <Skeleton height={20} width={240} />
+                          <Skeleton height={20} width={240} />
+                          <Skeleton height={30} width={240} />
+                        </div>
                       </div>
-                      <div className="mt-2 ">
-                      <Skeleton height={20} width={240} />
-                      <Skeleton height={20} width={240} />
-                      <Skeleton height={30} width={240} />
                     </div>
-                    </div>
-                   
                   </div>
-                </div>
                 ))}
               </Slider>
             </div>
@@ -99,12 +102,27 @@ const NewCollectionProducts = () => {
     );
   }
 
+  if (!Array.isArray(products) || products.length === 0) {
+    return (
+      <section id="best-sell-section">
+        <div className="container">
+          <div className="row justify-content-center mb-3">
+            <div className="col-lg-12 text-center">
+              <h1>Best Selling Product</h1>
+              <p>No products found.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section id="new-collection-section">
+    <section id="best-sell-section">
       <div className="container">
         <div className="row justify-content-center mb-3">
-          <div className="col-lg-12">
-            <h1>New Collection</h1>
+          <div className="col-lg-12 text-center">
+            <h1>Best Selling Product</h1>
           </div>
         </div>
         <div className="row">
@@ -115,13 +133,11 @@ const NewCollectionProducts = () => {
                   <div className="product-box text-center">
                     <div className="product-box-img hover01">
                       <div>
-                        <figure>
-                          <img
-                            src={product.image}
-                            className="mr-3"
-                            alt={product.name}
-                          />
-                        </figure>
+                        <img
+                          src={product.image}
+                          className="mr-3"
+                          alt={product.name}
+                        />
                       </div>
                     </div>
                     <div className="product-box-ctn">
@@ -133,10 +149,16 @@ const NewCollectionProducts = () => {
                         <span className="fa fa-star checked" />
                         <span className="fa fa-star" />
                       </p>
-                      <p className="pro-price">₹ {product.price}</p>
-                      <Link href={`/${product.category.slug}/${product.slug}`} className="cart-btn">
-                        Buy Now
-                      </Link>
+                      <ul className="pro-cart-list">
+                        <li>
+                          <Link href={`/${product.category.slug}/${product.slug}`} className="cart-btn">
+                            Buy Now
+                          </Link>
+                        </li>
+                        <li>
+                          <p className="pro-price">₹ {product.price}</p>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -175,9 +197,8 @@ const NewCollectionProducts = () => {
 .slick-track {
   display: flex;
 `}
+
       </style>
     </section>
   );
-};
-
-export default NewCollectionProducts;
+}
