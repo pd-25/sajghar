@@ -10,7 +10,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles for skeleton loader
 import { unstable_noStore as noStore } from 'next/cache';
 
-export default function NewCollectionProducts() {
+export default function NewCollectionProducts({data}) {
   noStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for tracking data fetching
@@ -18,8 +18,13 @@ export default function NewCollectionProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/frontend/product/random');
-        setProducts(response.data);
+        // Assuming data is an API response or an array of products directly
+        const response = await data; // If 'data' is directly the product array, remove this
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`); // Handle HTTP errors
+        }
+        const result = await response.json(); // Parse the response JSON if it is a fetch request
+        setProducts(result); // Assuming 'result' is the product array
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]); // Ensure products is an array even if the request fails
@@ -28,8 +33,14 @@ export default function NewCollectionProducts() {
       }
     };
 
-    fetchProducts();
-  }, []);
+    // Check if data is already an array (for SSR or pre-fetched data) or if it needs fetching
+    if (Array.isArray(data)) {
+      setProducts(data);
+      setLoading(false);
+    } else {
+      fetchProducts(); // Fetch from API if needed
+    }
+  }, [data]);
 
   // Slick Slider settings
   const settings = {

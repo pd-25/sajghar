@@ -1,6 +1,7 @@
 
+import prisma from '@/db';
 import { lazy } from 'react';
-
+import { unstable_noStore as noStore } from 'next/cache';
 const BestSellingProduct = lazy(() => import('@/component/main/home/BestSellingProducts'));
 const NewCollectionProducts = lazy(() => import('@/component/main/home/NewCollectionProducts'));
 const HeroSection = lazy(() => import('@/component/main/home/HeroSection'));
@@ -9,14 +10,26 @@ const About = lazy(() => import( '@/component/main/home/About'));
 
 
 
-export default function Home() {
+export default async function Home() {
+  noStore();
+  const products = await prisma.product.findMany({
+    where: {
+      status: 'ACTIVE', // Filter for active products
+    },
+    include: {
+      category: true, // Include the related category data
+    },
+    orderBy: {
+      id: 'desc',
+    },
+  });
   return (
     <>
    
 <HeroSection/>
   <PopulerCategories/>
- <BestSellingProduct/>
- <NewCollectionProducts/>
+ <BestSellingProduct data={products}/>
+ <NewCollectionProducts data={products}/>
    <About/>
     <section id="collection-section">
       <div className="container-fluid">
