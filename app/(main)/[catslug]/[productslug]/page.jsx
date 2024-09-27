@@ -2,10 +2,21 @@ import ProductSlug from '@/component/main/category/ProductSlug'
 import React from 'react'
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from '@/db';
-const page = ({params}) => {
+const page = async ({params}) => {
   noStore();
+  
+  const product = await prisma.product.findFirst({
+    where: {
+        slug: params.productslug,
+        status: 'ACTIVE' // Filter by both slug and status
+    },
+    include: {
+        images: true, // Include the related category data
+      },
+});
+// console.log(product)
   return (
-    <ProductSlug productslug ={params.productslug}/>
+    <ProductSlug productdata ={product}/>
   )
 }
 

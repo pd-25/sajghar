@@ -1,46 +1,41 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles
-import { useParams, useRouter } from "next/navigation";
-import Loader from "@/component/main/Loader"; // Assuming you have a custom Loader component
+import { useRouter } from "next/navigation";
 import InquiryModal from "@/component/main/InquiryModal";
 import { unstable_noStore as noStore } from 'next/cache';
-const ProductSlug = ({productslug}) => {
-  noStore();
+
+const ProductSlug = ({ productdata }) => {
+  noStore(); // No cache for SSR
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
- 
   const [showModal, setShowModal] = useState(false);
+
+  const router = useRouter();
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-  const router = useRouter();
 
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const response = await axios.get(`/api/frontend/product/${productslug}`);
-        setProduct(response.data);
-        setCurrentImage(response.data?.image);
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          router.push("/404");
-        } else {
-          setError("Failed to load product data");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (productslug) {
-      fetchProductData();
+    if (!productdata) {
+      setError("Failed to load product data");
+      setLoading(false);
+      return;
     }
-  }, [productslug, router]);
+
+    try {
+      setProduct(productdata);
+      setCurrentImage(productdata?.image);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to load product data");
+      setLoading(false);
+    }
+  }, [productdata]);
 
   const changeImg = (imagePath) => {
     setCurrentImage(imagePath);
@@ -49,6 +44,7 @@ const ProductSlug = ({productslug}) => {
   if (loading) {
     return (
       <>
+        {/* Loading skeleton */}
         <section id="innerPG-banner">
           <div className="container-fluid">
             <div className="row">
@@ -93,15 +89,7 @@ const ProductSlug = ({productslug}) => {
   if (error) {
     return (
       <>
-        <section id="innerPG-banner">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="banner-item col-lg-12">
-                <img src="/images/inn-banner.jpg" className="img-fluid" alt="Banner" />
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Error message */}
         <section id="error-section">
           <div className="container">
             <div className="row justify-content-center">
@@ -123,15 +111,7 @@ const ProductSlug = ({productslug}) => {
 
   return (
     <>
-      <section id="innerPG-banner">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="banner-item col-lg-12">
-              <img src="/images/inn-banner.jpg" className="img-fluid" alt="Banner" />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Product section */}
       <section id="inn-pro-section">
         <div className="container">
           <div className="row">
@@ -161,7 +141,7 @@ const ProductSlug = ({productslug}) => {
                 </p>
                 <p className="pro_desc">{product?.description || "Product description goes here."}</p>
                 <p className="pro-pg-price mb-4">₹ {product?.price || "0.00"}</p>
-                <button  className="rm-btn"  onClick={handleShowModal}>
+                <button className="rm-btn" onClick={handleShowModal}>
                   Buy Now
                 </button>
               </div>
@@ -169,13 +149,7 @@ const ProductSlug = ({productslug}) => {
           </div>
         </div>
       </section>
-      {showModal && <InquiryModal
-         productName={product.name}
-        show={showModal}
-        onClose={handleCloseModal}
-      />}
-      {/* <InquiryModal/> */}
-      
+      {showModal && <InquiryModal productName={product.name} show={showModal} onClose={handleCloseModal} />}
     </>
   );
 };
