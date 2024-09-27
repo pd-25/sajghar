@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { unstable_noStore as noStore } from 'next/cache';
-const Menu = () => {
+const Menu = ({offer}) => {
   noStore();
   const [categories, setCategories] = useState([]);
   const [offers, setOffers] = useState({ thirtyOff: [], fiftyOff: [] });
@@ -17,17 +17,23 @@ const Menu = () => {
     }
   };
 
+
   const getoffer = async () => {
-    try {
-      const response = await axios.get('/api/frontend/product/offer');
-      const products = response.data;
-      const thirtyOff = products.filter(product => product.offer === '30_off');
-      const fiftyOff = products.filter(product => product.offer === '50_off');
-      setOffers({ thirtyOff, fiftyOff });
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+   // Check if offer is an array
+   if (Array.isArray(offer)) {
+    const thirtyOff = offer.filter(product => product.offer === '30_off');
+    const fiftyOff = offer.filter(product => product.offer === '50_off');
+
+    // Set the filtered offers in state
+    setOffers({ thirtyOff, fiftyOff });
+
+    // Log the offers for debugging purposes
+   
+  } else {
+    console.error("Offer is not an array");
+  }
   };
+  
 
   useEffect(() => {
     fetchCategories();

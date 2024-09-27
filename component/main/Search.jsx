@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { searchProducts } from './SearchFunction';
 import { unstable_noStore as noStore } from 'next/cache';
 const InstantSearch = () => {
   noStore();
@@ -10,30 +11,34 @@ const InstantSearch = () => {
   const [results, setResults] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    if (query.length >= 3) {
-      const fetchResults = async () => {
-        try {
-          const response = await axios.get(`/api/frontend/product/`, {
-            params: { search: query },
-          });
-          setResults(response.data.slice(0, 5)); // Limit results to 5
-        } catch (error) {
-          console.error('Error fetching search results', error);
-        }
-      };
+ 
 
-      fetchResults();
-    } else {
-      setResults([]);
-    }
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (query.length >= 3) {
+     
+        const data = await searchProducts(query); // Call the search function
+        setResults(data.slice(0, 5)); // Limit results to 5
+      } else {
+        setResults([]);
+      }
+    };
+  
+    fetchResults();
   }, [query]);
 
   const handleResultClick = (product) => {
     setResults([]); // Clear results after clicking
     router.push(`/${product.category.slug}/${product.slug}`);
   };
-
+if(results.length < 0){
+  return (
+  
+    <li key={product.id} className="list-group-item">
+    No Result Found.
+  </li>
+  )
+}
   return (
     <div style={{ position: 'relative' }}>
       <form id="pro-search">

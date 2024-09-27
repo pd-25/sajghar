@@ -2,8 +2,25 @@ import Link from 'next/link'
 import React from 'react'
 import Menu from './Menu'
 import InstantSearch from './Search'
+import prisma from '@/db'
 
-const Header = () => {
+const Header =async () => { 
+  const offer = await prisma.product.findMany({
+  where: {
+    status: 'ACTIVE', // Filter for active products
+    offer: {
+      in: ['30_off', '50_off'], // Filter for products with 30_off or 50_off offer
+    },
+  },
+  include: {
+    category: true, // Include the related category data
+  },
+  orderBy: {
+    id: 'desc',
+  },
+});
+
+
   return (
     <>   
     <header id="main-header">
@@ -92,7 +109,7 @@ const Header = () => {
                 <span className="navbar-toggler-icon" />{" "}
               </button>
               <div id="navbarContent" className="collapse navbar-collapse">
-              <Menu/>
+              <Menu offer={offer}/>
               </div>
             </nav>
           </div>
@@ -106,3 +123,6 @@ const Header = () => {
 }
 
 export default Header
+
+
+
