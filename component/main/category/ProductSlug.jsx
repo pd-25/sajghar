@@ -6,8 +6,9 @@ import 'react-loading-skeleton/dist/skeleton.css'; // Import default styles
 import { useParams, useRouter } from "next/navigation";
 import Loader from "@/component/main/Loader"; // Assuming you have a custom Loader component
 import InquiryModal from "@/component/main/InquiryModal";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const ProductSlug = ({productslug}) => {
+  noStore();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

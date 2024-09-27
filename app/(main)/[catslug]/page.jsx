@@ -4,6 +4,7 @@ import prisma from '@/db';
 import React from 'react'
 import { unstable_noStore as noStore } from 'next/cache';
 const page = ({params}) => {
+  noStore();
   const  catslug  = params.catslug;
   return (
     <CategorySlug catslug={catslug}/>

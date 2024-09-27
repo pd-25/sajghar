@@ -5,8 +5,9 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'; // Import the default styles
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { unstable_noStore as noStore } from 'next/cache';
 const CategorySlug = ({catslug}) => {
+  noStore();
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

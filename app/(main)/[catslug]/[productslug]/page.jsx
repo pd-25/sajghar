@@ -3,6 +3,7 @@ import React from 'react'
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from '@/db';
 const page = ({params}) => {
+  noStore();
   return (
     <ProductSlug productslug ={params.productslug}/>
   )
